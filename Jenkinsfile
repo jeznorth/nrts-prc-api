@@ -9,7 +9,7 @@ pipeline {
         script {
           try {
             echo "Building: ${env.JOB_NAME} #${env.BUILD_ID}"
-            notifyBuild("Building: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOw")
+            notifyBuild("Building: ${env.JOB_NAME} #${env.BUILD_ID}", "YELLOW")
             openshiftBuild bldCfg: 'nrts-prc-api-beta', showBuildLogs: 'true'
           } catch (e) {
             notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
