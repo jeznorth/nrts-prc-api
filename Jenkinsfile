@@ -9,6 +9,7 @@ pipeline {
         script {
           try {
             echo "Building: nrts-prc-api beta branch"
+            echo sh(returnStdout: true, script: 'env')
             notifyBuild('Building: nrts-prc-api beta branch')
             openshiftBuild bldCfg: 'nrts-prc-api-beta', showBuildLogs: 'true'
           } catch (e) {
