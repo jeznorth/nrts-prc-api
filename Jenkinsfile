@@ -4,11 +4,30 @@ pipeline {
     skipDefaultCheckout()
   }
   stages {
-    stage('build nrts-prc-api-build') {
+    stage('Building: nrts-prc-api beta branch') {
       steps {
-        echo "Building: nrts-prc-api beta branch"
-        openshiftBuild bldCfg: 'nrts-prc-api-beta', showBuildLogs: 'true'
-        openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: '$BUILD_ID', srcStream: 'nrts-prc-api', srcTag: 'beta'
+        script {
+          try {
+            echo "Building: nrts-prc-api beta branch"
+            notifyBuild('Building: nrts-prc-api beta branch')
+            openshiftBuild bldCfg: 'nrts-prc-api-beta', showBuildLogs: 'true'
+          } catch (e) {
+            notifyBuild('BUILD:BETA ABORTED')
+          }
+        }
+      }
+    stage('Deploy') {
+      steps {
+        script {
+          try {
+            echo "Deploying: nrts-prc-api beta branch"
+            notifyBuild('Deploying: nrts-prc-api beta branch')
+            openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'beta', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
+          } catch (e) {
+            notifyBuild('DEPLOY:BETA ABORTED')
+          }
+        }
+        notifyBuild('DEPLOYED:BETA')
       }
     }
   }
@@ -38,7 +57,6 @@ def notifyBuild(String buildStatus = 'STARTED') {
     colorCode = '#FF0000'
   }
 
-
   // Send notifications
-  //slackSend (color: colorCode, message: summary)
+  slackSend (color: colorCode, message: summary)
 }
