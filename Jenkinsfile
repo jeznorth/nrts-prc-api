@@ -1,49 +1,55 @@
 pipeline {
   agent any
+  options {
+    skipDefaultCheckout()
+  }
   stages {
     stage('build nrts-prc-api-build') {
       steps {
         echo "Building: nrts-prc-api"
-        openshiftBuild bldCfg: 'nrts-prc-api', showBuildLogs: 'true'
-        openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: '$BUILD_ID', srcStream: 'nrts-prc-api', srcTag: 'latest'
+        sh 'printenv'
+        echo "${env.BRANCH_NAME}"
+        
+        // openshiftBuild bldCfg: 'nrts-prc-api', showBuildLogs: 'true'
+        // openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: '$BUILD_ID', srcStream: 'nrts-prc-api', srcTag: 'latest'
       }
     }
-    stage('deploy to DEV') {
-      steps {
-        openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'dev', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
-        notifyBuild('DEPLOYED:DEV')
-      }
-    }
-    stage('deploy to TEST') {
-      steps {
-        script {
-          try {
-            timeout(time: 2, unit: 'MINUTES') {
-              input "Deploy to TEST?"
-              openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'test', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
-              notifyBuild('DEPLOYED:TEST')
-            }
-          } catch (e) {
-            notifyBuild('DEPLOYMENT:TEST ABORTED')
-          }
-        }
-      }
-    }
-    stage('deploy to PROD') {
-      steps {
-        script {
-          try {
-            timeout(time: 2, unit: 'MINUTES') {
-              input "Deploy to PROD?"
-              openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'prod', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
-              notifyBuild('DEPLOYED:PROD')
-            }
-          } catch (e) {
-            notifyBuild('DEPLOYMENT:PROD ABORTED')
-          }
-        }
-      }
-    }
+    // stage('deploy to DEV') {
+    //   steps {
+    //     openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'dev', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
+    //     notifyBuild('DEPLOYED:DEV')
+    //   }
+    // }
+    // stage('deploy to TEST') {
+    //   steps {
+    //     script {
+    //       try {
+    //         timeout(time: 2, unit: 'MINUTES') {
+    //           input "Deploy to TEST?"
+    //           openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'test', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
+    //           notifyBuild('DEPLOYED:TEST')
+    //         }
+    //       } catch (e) {
+    //         notifyBuild('DEPLOYMENT:TEST ABORTED')
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('deploy to PROD') {
+    //   steps {
+    //     script {
+    //       try {
+    //         timeout(time: 2, unit: 'MINUTES') {
+    //           input "Deploy to PROD?"
+    //           openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'prod', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
+    //           notifyBuild('DEPLOYED:PROD')
+    //         }
+    //       } catch (e) {
+    //         notifyBuild('DEPLOYMENT:PROD ABORTED')
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
 
