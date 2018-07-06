@@ -1,4 +1,4 @@
-## NRTS PRC API
+## NRTS PRC API (beta)
 
 Minimal api for prc, stateless JWT & public API for NRTS-PRC
 
