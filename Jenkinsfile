@@ -13,6 +13,7 @@ pipeline {
             openshiftBuild bldCfg: 'nrts-prc-api', showBuildLogs: 'true'
           } catch (e) {
             notifyBuild("BUILD ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
+            error('Stopping early…')
           }
         }
       }
@@ -26,6 +27,7 @@ pipeline {
             openshiftTag destStream: 'nrts-prc-api', verbose: 'true', destTag: 'dev', srcStream: 'nrts-prc-api', srcTag: '$BUILD_ID'
           } catch (e) {
             notifyBuild("DEPLOY ${env.JOB_NAME} #${env.BUILD_ID} ABORTED", "RED")
+            error('Stopping early…')
           }
         }
         notifyBuild("DEPLOYED: ${env.JOB_NAME} #${env.BUILD_ID}", "GREEN")
