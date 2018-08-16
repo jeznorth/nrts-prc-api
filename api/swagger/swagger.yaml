@@ -486,12 +486,12 @@ paths:
           description: "Client filter."
         - in: query
           name: cl_file
-          type: string
+          type: number
           required: false
           description: "CL File # filter."
         - in: query
           name: tantalisID
-          type: string
+          type: number
           required: false
           description: "Tantalis ID filter."
         - in: query
@@ -809,12 +809,12 @@ paths:
           description: "Client filter."
         - in: query
           name: cl_file
-          type: string
+          type: number
           required: false
           description: "CL File # filter."
         - in: query
           name: tantalisID
-          type: string
+          type: number
           required: false
           description: "Tantalis ID filter."
         - in: query
