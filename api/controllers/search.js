@@ -85,7 +85,7 @@ exports.publicGetBCGW = function (args, res, next) {
               // TODO: change following to new function/promise
               //       and second 'then' to another function/promise
               var Application = require('mongoose').model('Application');
-              return Application.findOne({ tantalisID: code.SID }, function (err, o) {
+              return Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
                 if (o) {
                   obj.applications.push(o);
                 } else {
