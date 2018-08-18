@@ -45,16 +45,15 @@ exports.publicGetClientsInfoByDispositionId = function (args, res, next) {
 
 exports.publicGetBCGW = function (args, res, next) {
   // Build match query if on appId route
-  var clFile = args.swagger.params.crownLandsId.value;
-  defaultLog.info("Searching BCGW for CLFILE:", clFile);
+  var clid = args.swagger.params.crownLandsId.value;
+  defaultLog.info("Searching BCGW for CLID:", clid);
 
   // TODO: Error handling.
 
   // var searchURL = "https://openmaps.gov.bc.ca/geo/pub/WHSE_TANTALIS.TA_CROWN_TENURES_SVW/ows?service=wfs&version=2.0.0&request=getfeature&typename=pub:WHSE_TANTALIS.TA_CROWN_TENURES_SVW&outputFormat=application/json&PROPERTYNAME=CROWN_LANDS_FILE&CQL_FILTER=CROWN_LANDS_FILE=";
   var searchURL = "https://openmaps.gov.bc.ca/geo/pub/WHSE_TANTALIS.TA_CROWN_TENURES_SVW/ows?service=wfs&version=2.0.0&request=getfeature&typename=PUB:WHSE_TANTALIS.TA_CROWN_TENURES_SVW&outputFormat=json&srsName=EPSG:4326&CQL_FILTER=CROWN_LANDS_FILE=";
-  console.log("SEARCHING:", searchURL + "'" + clFile + "'");
   return new Promise(function (resolve, reject) {
-    request({ url: searchURL + "'" + clFile + "'" }, function (err, res, body) {
+    request({ url: searchURL + "'" + clid + "'" }, function (err, res, body) {
       if (err) {
         reject(err);
       } else if (res.statusCode !== 200) {
@@ -69,7 +68,7 @@ exports.publicGetBCGW = function (args, res, next) {
           resolve(obj);
         }
 
-        // Search for this in our DB in case it's been imported in an application.
+        // Search for this in our DB in case it's already been imported.
         try {
           var result = _.chain(obj.features)
             .groupBy("properties.DISPOSITION_TRANSACTION_SID")
@@ -82,8 +81,6 @@ exports.publicGetBCGW = function (args, res, next) {
           obj.applications = [];
           result.reduce(function (current, code) {
             return current.then(function () {
-              // TODO: change following to new function/promise
-              //       and second 'then' to another function/promise
               var Application = require('mongoose').model('Application');
               return Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
                 if (o) {
@@ -91,9 +88,7 @@ exports.publicGetBCGW = function (args, res, next) {
                 } else {
                   console.log("Nothing found");
                 }
-              })
-                // .then() // TODO: another search by CLID here
-                ;
+              });
             });
           }, Promise.resolve())
             .then(function () {
@@ -114,9 +109,9 @@ exports.publicGetBCGW = function (args, res, next) {
 };
 
 exports.publicGetBCGWDispositionTransactionId = function (args, res, next) {
-  // Build match query if on appId route
+  // Build match query if on dtId route
   var dtId = args.swagger.params.dtId.value;
-  defaultLog.info("Searching BCGW for Disposition Transaction ID:", dtId);
+  defaultLog.info("Searching BCGW for DTID:", dtId);
 
   // TODO: Error handling.
 
@@ -134,8 +129,39 @@ exports.publicGetBCGWDispositionTransactionId = function (args, res, next) {
           obj = JSON.parse(body);
         } catch (e) {
           defaultLog.error('Parsing Failed.', e);
+          resolve(obj);
         }
-        resolve(obj);
+
+        // Search for this in our DB in case it's already been imported.
+        try {
+          var result = _.chain(obj.features)
+            .groupBy("properties.DISPOSITION_TRANSACTION_SID")
+            .toPairs()
+            .map(function (currentItem) {
+              return _.zipObject(["SID", "sids"], currentItem);
+            })
+            .value();
+
+          obj.applications = [];
+          result.reduce(function (current, code) {
+            return current.then(function () {
+              var Application = require('mongoose').model('Application');
+              return Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
+                if (o) {
+                  obj.applications.push(o);
+                } else {
+                  console.log("Nothing found");
+                }
+              });
+            });
+          }, Promise.resolve())
+            .then(function () {
+              resolve(obj);
+            });
+        } catch (e) {
+          // Error, don't tag the isImported on it.
+          resolve(obj);
+        }
       }
     });
   }).then(function (data) {
