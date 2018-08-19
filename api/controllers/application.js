@@ -331,6 +331,7 @@ var getApplications = function (role, query, fields, skip, limit) {
           }
         }
       },
+      { "$sort": { cl_file: 1 } },
       { "$skip": skip || 0 },
       { "$limit": limit || MAX_LIMIT }
     ]).exec()
