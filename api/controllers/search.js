@@ -45,7 +45,8 @@ exports.publicGetClientsInfoByDispositionId = function (args, res, next) {
 
 exports.publicGetBCGW = function (args, res, next) {
   // Build match query if on appId route
-  var clid = args.swagger.params.crownLandsId.value;
+  // Pad with leading zeros to make CLID seven digits
+  var clid = _.padStart(args.swagger.params.crownLandsId.value, 7, '0');
   defaultLog.info("Searching BCGW for CLID:", clid);
 
   // TODO: Error handling.
