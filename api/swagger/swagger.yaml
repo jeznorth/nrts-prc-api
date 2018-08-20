@@ -6,7 +6,7 @@ host: localhost:3000
 basePath: /api
 tags:
 - name: "login"
-  description: "Everything about Logging in"
+  description: "Everything about logging in"
   externalDocs:
     description: "Find out more"
     url: "http://github.com/bcgov/nrts-prc-api.git"
@@ -431,7 +431,7 @@ paths:
         - application
       summary: "Get a list of applications"
       operationId: protectedGet
-      description: "Authenticated access to retreiving applications."
+      description: "Authenticated access to retrieving applications."
       security:
         - Bearer: []
       x-security-scopes:
@@ -546,7 +546,7 @@ paths:
         - application
       summary: "Get an application"
       operationId: protectedGet
-      description: "Authenticated access to retreiving applications."
+      description: "Authenticated access to retrieving applications."
       security:
         - Bearer: []
       x-security-scopes:
@@ -764,7 +764,7 @@ paths:
         - application
       summary: "Get a list of public applications"
       operationId: publicGet
-      description: "Retreiving public applications."
+      description: "Retrieving public applications."
       parameters:
         - in: query
           name: fields
@@ -869,7 +869,7 @@ paths:
         - application
       summary: "Get an application"
       operationId: publicGet
-      description: "Public access to retreiving applications."
+      description: "Public access to retrieving applications."
       parameters:
         - name: appId
           in: path
@@ -922,9 +922,9 @@ paths:
     get:
       tags:
         - search
-      summary: "Get a list of searchable things from the bcgw"
+      summary: "Get a list of searchable things from the BCGW"
       operationId: publicGetBCGW
-      description: "Retreiving search results."
+      description: "Retrieving search results."
       parameters:
         - name: crownLandsId
           in: path
@@ -1019,9 +1019,9 @@ paths:
     get:
       tags:
         - search
-      summary: "Get a list of searchable things from the bcgw"
+      summary: "Get a list of searchable things from the BCGW"
       operationId: publicGetBCGWDispositionTransactionId
-      description: "Retreiving search results."
+      description: "Retrieving search results."
       parameters:
         - name: dtId
           in: path
@@ -1119,7 +1119,7 @@ paths:
         - document
       summary: "Get a list of documents"
       operationId: protectedGet
-      description: "Authenticated access to retreiving a document."
+      description: "Authenticated access to retrieving documents."
       security:
         - Bearer: []
       x-security-scopes:
@@ -1201,7 +1201,7 @@ paths:
         - document
       summary: "Get a document"
       operationId: protectedGet
-      description: "Authenticated access to retreiving a document."
+      description: "Authenticated access to retrieving a document."
       security:
         - Bearer: []
       x-security-scopes:
@@ -1440,7 +1440,7 @@ paths:
         - document
       summary: "Download a document"
       operationId: protectedDownload
-      description: "Authenticated access to retreiving a document binary."
+      description: "Authenticated access to retrieving a document binary."
       security:
         - Bearer: []
       x-security-scopes:
@@ -1527,7 +1527,7 @@ paths:
         - document
       summary: "Get a list of documents"
       operationId: publicGet
-      description: "Retreiving public documents."
+      description: "Retrieving public documents."
       parameters:
         - in: query
           name: _application
@@ -1599,7 +1599,7 @@ paths:
         - document
       summary: "Get a document"
       operationId: publicGet
-      description: "Public access to retreiving documents."
+      description: "Public access to retrieving documents."
       parameters:
         - name: docId
           in: path
@@ -1652,7 +1652,7 @@ paths:
         - document
       summary: "Download a document"
       operationId: publicDownload
-      description: "Authenticated access to retreiving a document binary."
+      description: "Authenticated access to retrieving a document binary."
       parameters:
         - name: docId
           in: path
@@ -1715,9 +1715,9 @@ paths:
     get:
       tags:
         - organization
-      summary: "Get a list of documents"
+      summary: "Get a list of organizations"
       operationId: protectedGet
-      description: "Authenticated access to retreiving organizations."
+      description: "Authenticated access to retrieving organizations."
       security:
         - Bearer: []
       x-security-scopes:
@@ -1770,7 +1770,7 @@ paths:
         - organization
       summary: "Get an organization"
       operationId: protectedGet
-      description: "Authenticated access to retreiving organizations."
+      description: "Authenticated access to retrieving an organization."
       security:
         - Bearer: []
       x-security-scopes:
@@ -1946,9 +1946,9 @@ paths:
     get:
       tags:
         - organization
-      summary: "Get a list of documents"
+      summary: "Get a list of organizations"
       operationId: publicGet
-      description: "Retreiving public organizations."
+      description: "Retrieving public organizations."
       parameters:
         - in: query
           name: fields
@@ -1994,9 +1994,9 @@ paths:
     get:
       tags:
         - organization
-      summary: "Get a document"
+      summary: "Get an organization"
       operationId: publicGet
-      description: "Public access to retreiving organizations."
+      description: "Public access to retrieving organizations."
       parameters:
         - name: orgId
           in: path
@@ -2071,7 +2071,7 @@ paths:
         - user
       summary: "Get a list of users"
       operationId: protectedGet
-      description: "Authenticated access to retreiving users."
+      description: "Authenticated access to retrieving users."
       security:
         - Bearer: []
       x-security-scopes:
@@ -2123,7 +2123,7 @@ paths:
         - user
       summary: "Get a user"
       operationId: protectedGet
-      description: "Authenticated access to retreiving users."
+      description: "Authenticated access to retrieving a user."
       security:
         - Bearer: []
       x-security-scopes:
@@ -2231,9 +2231,9 @@ paths:
     get:
       tags:
         - decision
-      summary: "Get a list of documents"
+      summary: "Get a list of decisions"
       operationId: protectedGet
-      description: "Authenticated access to retreiving decisions."
+      description: "Authenticated access to retrieving decisions."
       security:
         - Bearer: []
       x-security-scopes:
@@ -2299,7 +2299,7 @@ paths:
         - decision
       summary: "Get a decision"
       operationId: protectedGet
-      description: "Authenticated access to retreiving decisions."
+      description: "Authenticated access to retrieving a decision."
       security:
         - Bearer: []
       x-security-scopes:
@@ -2508,9 +2508,9 @@ paths:
     get:
       tags:
         - decision
-      summary: "Get a list of documents"
+      summary: "Get a list of decisions"
       operationId: publicGet
-      description: "Retreiving public decisions."
+      description: "Retrieving public decisions."
       parameters:
         - in: query
           name: fields
@@ -2564,9 +2564,9 @@ paths:
     get:
       tags:
         - decision
-      summary: "Get a document"
+      summary: "Get a decision"
       operationId: publicGet
-      description: "Public access to retreiving decisions."
+      description: "Public access to retrieving decisions."
       parameters:
         - name: decisionId
           in: path
@@ -2615,7 +2615,7 @@ paths:
         - comment
       summary: "Get a list of comments"
       operationId: protectedGet
-      description: "Authenticated access to retreiving a comment."
+      description: "Authenticated access to retrieving comments."
       security:
         - Bearer: []
       x-security-scopes:
@@ -2644,6 +2644,16 @@ paths:
           items:
             type: string
             enum: *commentFields
+        - in: query
+          name: pageNum
+          type: number
+          required: false
+          description: "Page number (100 results each)."
+        - in: query
+          name: pageSize
+          type: number
+          required: false
+          description: "Number of results per page (if 'pageNum' is specified)."
       responses:
         "200":
           description: "Success"
@@ -2681,7 +2691,7 @@ paths:
         - comment
       summary: "Get a comment"
       operationId: protectedGet
-      description: "Authenticated access to retreiving a comment."
+      description: "Authenticated access to retrieving a comment."
       security:
         - Bearer: []
       x-security-scopes:
@@ -2886,7 +2896,7 @@ paths:
         - comment
       summary: "Get a list of comments"
       operationId: publicGet
-      description: "Retreiving public comments."
+      description: "Retrieving public comments."
       parameters:
         - in: query
           name: _commentPeriod
@@ -2905,6 +2915,16 @@ paths:
           items:
             type: string
             enum: *commentFields
+        - in: query
+          name: pageNum
+          type: number
+          required: false
+          description: "Page number (100 results each)."
+        - in: query
+          name: pageSize
+          type: number
+          required: false
+          description: "Number of results per page (if 'pageNum' is specified)."
       responses:
         "200":
           description: "Success"
@@ -2942,7 +2962,7 @@ paths:
         - comment
       summary: "Get a comment"
       operationId: publicGet
-      description: "Public access to retreiving comments."
+      description: "Public access to retrieving comments."
       parameters:
         - name: CommentId
           in: path
@@ -3018,7 +3038,7 @@ paths:
         - commentperiod
       summary: "Get a list of comment periods"
       operationId: protectedGet
-      description: "Authenticated access to retreiving a commentperiod."
+      description: "Authenticated access to retrieving comment periods."
       security:
         - Bearer: []
       x-security-scopes:
@@ -3082,9 +3102,9 @@ paths:
     get:
       tags:
         - commentperiod
-      summary: "Get a commentperiod"
+      summary: "Get a comment period"
       operationId: protectedGet
-      description: "Authenticated access to retreiving a commentperiod."
+      description: "Authenticated access to retrieving a comment period."
       security:
         - Bearer: []
       x-security-scopes:
@@ -3303,9 +3323,9 @@ paths:
     get:
       tags:
         - commentperiod
-      summary: "Get a list of comment period(s)"
+      summary: "Get a list of comment periods"
       operationId: publicGet
-      description: "Retreiving public comment period(s)."
+      description: "Public access to retrieving comment periods."
       parameters:
         - in: query
           name: _application
@@ -3364,9 +3384,9 @@ paths:
     get:
       tags:
         - commentperiod
-      summary: "Get a commentperiod"
+      summary: "Get a comment period"
       operationId: publicGet
-      description: "Public access to retreiving comments."
+      description: "Public access to retrieving comment periods."
       parameters:
         - name: CommentPeriodId
           in: path
