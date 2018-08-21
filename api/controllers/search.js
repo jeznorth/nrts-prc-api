@@ -79,17 +79,15 @@ exports.publicGetBCGW = function (args, res, next) {
             })
             .value();
 
-          obj.sidsFound = []; // OBSOLETE
-          obj.applications = [];
+          obj.sidsFound = [];
           result.reduce(function (current, code) {
             return current.then(function () {
               var Application = require('mongoose').model('Application');
               return Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
                 if (o) {
-                  obj.sidsFound.push(code.SID); // OBSOLETE
-                  obj.applications.push(o);
+                  obj.sidsFound.push(Number(code.SID));
                 } else {
-                  console.log("Nothing found");
+                  // console.log("Nothing found");
                 }
               });
             });
@@ -145,15 +143,15 @@ exports.publicGetBCGWDispositionTransactionId = function (args, res, next) {
             })
             .value();
 
-          obj.applications = [];
+          obj.sidsFound = [];
           result.reduce(function (current, code) {
             return current.then(function () {
               var Application = require('mongoose').model('Application');
               return Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
                 if (o) {
-                  obj.applications.push(o);
+                  obj.sidsFound.push(Number(code.SID));
                 } else {
-                  console.log("Nothing found");
+                  // console.log("Nothing found");
                 }
               });
             });
