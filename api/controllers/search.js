@@ -1,9 +1,8 @@
-var auth       = require("../helpers/auth");
-var _          = require('lodash');
+var _ = require('lodash');
 var defaultLog = require('winston').loggers.get('default');
-var mongoose   = require('mongoose');
-var Actions    = require('../helpers/actions');
-var request    = require('request');
+var mongoose = require('mongoose');
+var Actions = require('../helpers/actions');
+var request = require('request');
 
 exports.protectedOptions = function (args, res, rest) {
   res.status(200).send();
@@ -82,13 +81,19 @@ exports.publicGetBCGW = function (args, res, next) {
           obj.sidsFound = [];
           result.reduce(function (current, code) {
             return current.then(function () {
-              var Application = require('mongoose').model('Application');
-              return Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
-                if (o) {
-                  obj.sidsFound.push(Number(code.SID));
-                } else {
-                  // console.log("Nothing found");
-                }
+              var Application = mongoose.model('Application');
+              return new Promise(function (complete, fail) {
+                Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
+                  if (err) {
+                    fail();
+                  }
+                  if (o) {
+                    obj.sidsFound.push(o.tantalisID);
+                  } else {
+                    console.log("Nothing found");
+                  }
+                  complete();
+                });
               });
             });
           }, Promise.resolve())
@@ -146,13 +151,19 @@ exports.publicGetBCGWDispositionTransactionId = function (args, res, next) {
           obj.sidsFound = [];
           result.reduce(function (current, code) {
             return current.then(function () {
-              var Application = require('mongoose').model('Application');
-              return Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
-                if (o) {
-                  obj.sidsFound.push(Number(code.SID));
-                } else {
-                  // console.log("Nothing found");
-                }
+              var Application = mongoose.model('Application');
+              return new Promise(function (complete, fail) {
+                Application.findOne({ tantalisID: code.SID, isDeleted: false }, function (err, o) {
+                  if (err) {
+                    fail();
+                  }
+                  if (o) {
+                    obj.sidsFound.push(o.tantalisID);
+                  } else {
+                    console.log("Nothing found");
+                  }
+                  complete();
+                });
               });
             });
           }, Promise.resolve())
