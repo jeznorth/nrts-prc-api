@@ -233,7 +233,7 @@ definitions:
       - dateAdded
       - _addedBy
 
-### Comment Definitions
+### Comment Period Definitions
   CommentPeriodId:
     type: object
     properties:
@@ -258,7 +258,7 @@ definitions:
     description: "Optional fields to return"
     example: startDate|endDate|description
     #TODO: Fix enums
-    enum: &commentperiodFields
+    enum: &commentPeriodFields
       - startDate
       - endDate
       - description
@@ -3087,7 +3087,7 @@ paths:
           collectionFormat: pipes
           items:
             type: string
-            enum: *commentperiodFields
+            enum: *commentPeriodFields
       responses:
         "200":
           description: "Success"
@@ -3364,7 +3364,7 @@ paths:
           collectionFormat: pipes
           items:
             type: string
-            enum: *commentperiodFields
+            enum: *commentPeriodFields
       responses:
         "200":
           description: "Success"
