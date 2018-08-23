@@ -13,7 +13,7 @@ exports.protectedOptions = function (args, res, rest) {
 };
 
 exports.publicGet = function (args, res, next) {
-  var query = {};
+  var query = {}, sort = {};
   var skip = null, limit = null;
 
   // Never return deleted comment(s).
@@ -26,6 +26,11 @@ exports.publicGet = function (args, res, next) {
   else {
     if (args.swagger.params._commentPeriod && args.swagger.params._commentPeriod.value) {
       query = Utils.buildQuery("_commentPeriod", args.swagger.params._commentPeriod.value, query);
+    }
+
+    if (args.swagger.params.sortBy && args.swagger.params.sortBy.value) {
+      // TODO: parse sortBy and build aggregate operation
+      // see below
     }
 
     var pageSize = DEFAULT_PAGESIZE;
@@ -43,7 +48,7 @@ exports.publicGet = function (args, res, next) {
   }
 
   // defaultLog.info("query:", query);
-  getComments(['public'], query, args.swagger.params.fields.value, skip, limit)
+  getComments(['public'], query, args.swagger.params.fields.value, sort, skip, limit)
     .then(function (data) {
       return Actions.sendResponse(res, 200, data);
     });
@@ -52,7 +57,7 @@ exports.publicGet = function (args, res, next) {
 exports.protectedGet = function (args, res, next) {
   // defaultLog.info("args.swagger.params:", args.swagger.params.auth_payload.scopes);
 
-  var query = {};
+  var query = {}, sort = {};
   var skip = null, limit = null;
 
   // Unless they specifically ask for it, don't return deleted comment(s).
@@ -71,6 +76,18 @@ exports.protectedGet = function (args, res, next) {
       query = Utils.buildQuery("_commentPeriod", args.swagger.params._commentPeriod.value, query);
     }
 
+    if (args.swagger.params.sortBy && args.swagger.params.sortBy.value) {
+      // TODO
+      // convert from: "-last_modified,+email"
+      // to: "{ $sort: { <field1>: <sort order>, <field2>: <sort order> ... } }"
+      var fields = args.swagger.params.sortBy.value.split(',');
+      fields.forEach(function (field) {
+        var order_by = field.charAt(0) == '-' ? -1 : 1; // must be + or -
+        var sort_by = field.slice(1);
+        sort[sort_by] = order_by;
+      }, this);
+    }
+
     var pageSize = DEFAULT_PAGESIZE;
     if (args.swagger.params.pageSize && args.swagger.params.pageSize.value !== undefined) {
       if (args.swagger.params.pageSize.value > 0) {
@@ -86,7 +103,7 @@ exports.protectedGet = function (args, res, next) {
   }
 
   // defaultLog.info("query:", query);
-  getComments(args.swagger.params.auth_payload.scopes, query, args.swagger.params.fields.value, skip, limit)
+  getComments(args.swagger.params.auth_payload.scopes, query, args.swagger.params.fields.value, sort, skip, limit)
     .then(function (data) {
       return Actions.sendResponse(res, 200, data);
     });
@@ -179,7 +196,7 @@ exports.protectedPut = function (args, res, next) {
   });
 };
 
-// Publish/Unpublish the Comment
+// Publish the Comment
 exports.protectedPublish = function (args, res, next) {
   var objId = args.swagger.params.CommentId.value;
   defaultLog.info("Publish Comment:", objId);
@@ -205,6 +222,7 @@ exports.protectedPublish = function (args, res, next) {
   });
 };
 
+// Unpublish the Comment
 exports.protectedUnPublish = function (args, res, next) {
   var objId = args.swagger.params.CommentId.value;
   defaultLog.info("UnPublish Comment:", objId);
@@ -230,7 +248,7 @@ exports.protectedUnPublish = function (args, res, next) {
   });
 };
 
-var getComments = function (role, query, fields, skip, limit) {
+var getComments = function (role, query, fields, sort, skip, limit) {
   return new Promise(function (resolve, reject) {
     var Comment = mongoose.model('Comment');
     var projection = {};
@@ -265,7 +283,8 @@ var getComments = function (role, query, fields, skip, limit) {
       projection[f] = 1;
     });
 
-    Comment.aggregate([
+    // use compact() to remove null elements
+    var aggregations = _.compact([
       { "$match": query },
       { "$project": projection },
       {
@@ -285,10 +304,12 @@ var getComments = function (role, query, fields, skip, limit) {
           }
         }
       },
-      { "$sort": { _id: 1 } },
+      _.isEmpty(sort) ? null : { "$sort": sort },
       { "$skip": skip || 0 },
       { "$limit": limit || MAX_LIMIT }
-    ]).exec()
+    ]);
+
+    Comment.aggregate(aggregations).exec()
       .then(function (data) {
         defaultLog.info("data:", data);
         resolve(data);

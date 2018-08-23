@@ -1,8 +1,8 @@
-var _ = require('lodash');
+var _          = require('lodash');
 var defaultLog = require('winston').loggers.get('default');
-var mongoose = require('mongoose');
-var Actions = require('../helpers/actions');
-var request = require('request');
+var mongoose   = require('mongoose');
+var Actions    = require('../helpers/actions');
+var request    = require('request');
 
 exports.protectedOptions = function (args, res, rest) {
   res.status(200).send();
