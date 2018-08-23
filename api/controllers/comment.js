@@ -29,8 +29,18 @@ exports.publicGet = function (args, res, next) {
     }
 
     if (args.swagger.params.sortBy && args.swagger.params.sortBy.value) {
-      // TODO: parse sortBy and build aggregate operation
-      // see below
+      args.swagger.params.sortBy.value.forEach(function (value) {
+        var order_by = value.charAt(0) == '-' ? -1 : 1;
+        var sort_by = value.slice(1);
+        // only accept certain fields
+        switch (order_by) {
+          case 'commentStatus':
+          case 'contactName':
+          case 'dateAdded':
+            sort[sort_by] = order_by;
+            break;
+        }
+      }, this);
     }
 
     var pageSize = DEFAULT_PAGESIZE;
@@ -77,14 +87,17 @@ exports.protectedGet = function (args, res, next) {
     }
 
     if (args.swagger.params.sortBy && args.swagger.params.sortBy.value) {
-      // TODO
-      // convert from: "-last_modified,+email"
-      // to: "{ $sort: { <field1>: <sort order>, <field2>: <sort order> ... } }"
-      var fields = args.swagger.params.sortBy.value.split(',');
-      fields.forEach(function (field) {
-        var order_by = field.charAt(0) == '-' ? -1 : 1; // must be + or -
-        var sort_by = field.slice(1);
-        sort[sort_by] = order_by;
+      args.swagger.params.sortBy.value.forEach(function (value) {
+        var order_by = value.charAt(0) == '-' ? -1 : 1;
+        var sort_by = value.slice(1);
+        // only accept certain fields
+        switch (sort_by) {
+          case 'commentStatus':
+          case 'contactName':
+          case 'dateAdded':
+            sort[sort_by] = order_by;
+            break;
+        }
       }, this);
     }
 
@@ -285,8 +298,8 @@ var getComments = function (role, query, fields, sort, skip, limit) {
 
     // use compact() to remove null elements
     var aggregations = _.compact([
-      { "$match": query },
-      { "$project": projection },
+      { $match: query },
+      { $project: projection },
       {
         $redact: {
           $cond: {
@@ -304,9 +317,9 @@ var getComments = function (role, query, fields, sort, skip, limit) {
           }
         }
       },
-      _.isEmpty(sort) ? null : { "$sort": sort },
-      { "$skip": skip || 0 },
-      { "$limit": limit || MAX_LIMIT }
+      _.isEmpty(sort) ? null : { $sort: sort },
+      { $skip: skip || 0 },
+      { $limit: limit || MAX_LIMIT }
     ]);
 
     Comment.aggregate(aggregations).exec()

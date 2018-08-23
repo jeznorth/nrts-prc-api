@@ -232,6 +232,17 @@ definitions:
       - commentStatus
       - dateAdded
       - _addedBy
+  CommentSortByFields:
+    type: string
+    description: "Optional fields to sort by (prefixed with + or - for order)"
+    example: +commentStatus,-dateAdded
+    enum: &commentSortByFields
+      - +commentStatus
+      - -commentStatus
+      - +contactName
+      - -contactName
+      - +dateAdded
+      - -dateAdded
 
 ### Comment Period Definitions
   CommentPeriodId:
@@ -2669,9 +2680,12 @@ paths:
           description: "Number of results per page (if 'pageNum' is specified)"
         - in: query
           name: sortBy
-          type: string
+          description: "Comment fields to sort by"
           required: false
-          description: "Field(s) to sort by (prepended with + or - for order)"
+          type: array
+          items:
+            type: string
+            enum: *commentSortByFields
       responses:
         "200":
           description: "Success"
@@ -2944,9 +2958,12 @@ paths:
           description: "Number of results per page (if 'pageNum' is specified)"
         - in: query
           name: sortBy
-          type: string
+          description: "Comment fields to sort by"
           required: false
-          description: "Field(s) to sort by (prepended with + or - for order)"
+          type: array
+          items:
+            type: string
+            enum: *commentSortByFields
       responses:
         "200":
           description: "Success"
