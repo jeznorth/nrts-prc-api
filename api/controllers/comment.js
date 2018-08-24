@@ -33,11 +33,13 @@ exports.publicGet = function (args, res, next) {
         var order_by = value.charAt(0) == '-' ? -1 : 1;
         var sort_by = value.slice(1);
         // only accept certain fields
-        switch (order_by) {
+        switch (sort_by) {
           case 'commentStatus':
-          case 'contactName':
           case 'dateAdded':
             sort[sort_by] = order_by;
+            break;
+          case 'contactName':
+            sort['commentAuthor.contactName'] = order_by;
             break;
         }
       }, this);
@@ -93,9 +95,11 @@ exports.protectedGet = function (args, res, next) {
         // only accept certain fields
         switch (sort_by) {
           case 'commentStatus':
-          case 'contactName':
           case 'dateAdded':
             sort[sort_by] = order_by;
+            break;
+          case 'contactName':
+            sort['commentAuthor.contactName'] = order_by;
             break;
         }
       }, this);
@@ -315,6 +319,13 @@ var getComments = function (role, query, fields, sort, skip, limit) {
             then: "$$DESCEND",
             else: "$$PRUNE"
           }
+        }
+      },
+      // flatten commentAuthor object (if it exists) so we can sort on its properties
+      _.isEmpty(sort) ? null : {
+        $unwind: {
+          path: "$commentAuthor",
+          preserveNullAndEmptyArrays: true
         }
       },
       _.isEmpty(sort) ? null : { $sort: sort },
