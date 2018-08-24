@@ -36,10 +36,8 @@ exports.publicGet = function (args, res, next) {
         switch (sort_by) {
           case 'commentStatus':
           case 'dateAdded':
-            sort[sort_by] = order_by;
-            break;
           case 'contactName':
-            sort['commentAuthor.contactName'] = order_by;
+            sort[sort_by] = order_by;
             break;
         }
       }, this);
@@ -96,10 +94,8 @@ exports.protectedGet = function (args, res, next) {
         switch (sort_by) {
           case 'commentStatus':
           case 'dateAdded':
-            sort[sort_by] = order_by;
-            break;
           case 'contactName':
-            sort['commentAuthor.contactName'] = order_by;
+            sort[sort_by] = order_by;
             break;
         }
       }, this);
@@ -300,6 +296,12 @@ var getComments = function (role, query, fields, sort, skip, limit) {
       projection[f] = 1;
     });
 
+    if (!_.isEmpty(sort)) {
+      // extract contactName so we can sort on it
+      // change to lower-case for case-insensitive sorting
+      projection.contactName = { $toLower: "$commentAuthor.contactName" };
+    }
+
     // use compact() to remove null elements
     var aggregations = _.compact([
       { $match: query },
@@ -321,14 +323,7 @@ var getComments = function (role, query, fields, sort, skip, limit) {
           }
         }
       },
-      // flatten commentAuthor object (if it exists) so we can sort on its properties
-      _.isEmpty(sort) ? null : {
-        $unwind: {
-          path: "$commentAuthor",
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      _.isEmpty(sort) ? null : { $sort: sort },
+      !_.isEmpty(sort) ? { $sort: sort } : null,
       { $skip: skip || 0 },
       { $limit: limit || MAX_LIMIT }
     ]);
