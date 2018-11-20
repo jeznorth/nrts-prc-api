@@ -130,7 +130,7 @@ afterAll(() => {
   cleanupTestDocumentFiles();
 });
 
-describe('GET /document', () => {
+describe.only('GET /document', () => {
   test('returns a list of non-deleted, public and sysadmin documents', done => {
     setupDocuments(documentsData).then((documents) => {
       request(app).get('/api/document')
